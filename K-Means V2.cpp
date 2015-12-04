@@ -136,6 +136,13 @@ int main()
     dataPoints.save("data", arma::csv_ascii);
     centroids.save("centroids", arma::csv_ascii);
 
+    arma::mat x;
+    x.load("cat.pgm", arma::pgm_binary);
+
+    arma::mat y = arma::flipud(x);
+
+    y.save("cat_flip.pgm", arma::pgm_binary);
+
 }
 
 
