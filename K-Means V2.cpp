@@ -100,12 +100,34 @@ dataPoints              = Point data
 
     for(int i = 0; i < centroids.n_cols; i++)
     {
-        if( tempCount(i) != 0) {tempCentroids.col(i) /= tempCount(i);}
+        if( tempCount(i) == 0) { tempCentroids.col(i) =  dataPoints.col(rand() % (dataPoints.n_cols-1));}
+        else{ tempCentroids.col(i) /= tempCount(i);}
     }
 
     return tempCentroids;
 }
 
+//////////////////////////////
+/// Create Centroid Dictionary
+//  Creates a dictionary of centroids from a given set of cluster data
+//
+void createDict(std::string path, const arma::uword nCentroids, const arma:uword iter)
+{
+/*
+path                = Path to cluster data
+nCentroids          = Number of centroids
+iter                = Number of iterations until centroids are expected to converge
+*/
+
+    arma::Mat<double> dataPoints; // matrix to hold cluster data
+    dataPoints.load(path, arma::pgm_binary); // load PGM into the matrix
+    arma::Mat<double> centroids =  initCent(nCentroids, dataPoints);  // Store the initial centroids
+
+    for(int i = 0; i < itt; i++)
+    {
+        centroids = recalCentroid(dataPoints,centroids);
+    }
+}
 
 int main()
 {
@@ -124,7 +146,10 @@ int main()
     const int nCluster = points/nCentroids;                                            // Cluster size
 
     //Variables
-    arma::Mat<double> dataPoints = genCluster(points,dim, nCluster);             // Generate data
+    //arma::Mat<double> dataPoints = genCluster(points,dim, nCluster);             // Generate data
+    arma::Mat<double> dataPoints;
+    dataPoints.load("Cluster Data/clusterData", arma::pgm_binary); //Load clusterdata
+
     arma::Mat<double> centroids =  initCent(nCentroids, dataPoints);  // Store the initial centroids
 
     for(int i = 0; i < itt; i++)
@@ -132,16 +157,8 @@ int main()
         centroids = recalCentroid(dataPoints,centroids);
     }
 
-    centroids.print();
-    dataPoints.save("data", arma::csv_ascii);
-    centroids.save("centroids", arma::csv_ascii);
-
-    arma::mat x;
-    x.load("cat.pgm", arma::pgm_binary);
-
-    arma::mat y = arma::flipud(x);
-
-    y.save("cat_flip.pgm", arma::pgm_binary);
+    dataPoints.save("Cluster Data/data", arma::csv_ascii);
+    centroids.save("Cluster Data/centroids", arma::csv_ascii);
 
 }
 
