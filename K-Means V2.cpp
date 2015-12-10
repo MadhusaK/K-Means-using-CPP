@@ -50,8 +50,6 @@ dataPoints              = Point data
         // Add the data point at each index to the list of centroids
         centroids.col(i) = dataPoints.col(tempVec(i));
     }
-    tempVec.print();
-    centroids.print();
 
     return centroids;
 
@@ -111,7 +109,7 @@ dataPoints              = Point data
 /// Create Centroid Dictionary
 //  Creates a dictionary of centroids from a given set of cluster data
 //
-void createDict(std::string path, const arma::uword nCentroids, const arma:uword iter)
+void createDict(std::string path, const arma::uword nCentroids, const arma::uword iter)
 {
 /*
 path                = Path to cluster data
@@ -123,12 +121,18 @@ iter                = Number of iterations until centroids are expected to conve
     dataPoints.load(path, arma::pgm_binary); // load PGM into the matrix
     arma::Mat<double> centroids =  initCent(nCentroids, dataPoints);  // Store the initial centroids
 
-    for(int i = 0; i < itt; i++)
+    // Find converge in a fixed amount of iterations
+    for(int i = 0; i < iter; i++)
     {
         centroids = recalCentroid(dataPoints,centroids);
     }
+
+    centroids.save("Cluster Data/centDict.mat");
+
 }
 
+
+/*
 int main()
 {
     /////////////
@@ -141,13 +145,14 @@ int main()
     //Constants
     const int points = 100;                                                            // Number of points
     const int dim = 2;                                                                 // Dimensions of the random variable
-    const int itt = 20;                                                                 // Number of Iterations
-    const int nCentroids = 10; // Must be a common factor of points                     // Number of Centroids to look for
+    const arma::uword iter = 20;                                                                 // Number of Iterations
+    const arma::uword nCentroids = 10; // Must be a common factor of points                     // Number of Centroids to look for
     const int nCluster = points/nCentroids;                                            // Cluster size
 
     //Variables
     //arma::Mat<double> dataPoints = genCluster(points,dim, nCluster);             // Generate data
-    arma::Mat<double> dataPoints;
+
+    /*arma::Mat<double> dataPoints;
     dataPoints.load("Cluster Data/clusterData", arma::pgm_binary); //Load clusterdata
 
     arma::Mat<double> centroids =  initCent(nCentroids, dataPoints);  // Store the initial centroids
@@ -160,7 +165,10 @@ int main()
     dataPoints.save("Cluster Data/data", arma::csv_ascii);
     centroids.save("Cluster Data/centroids", arma::csv_ascii);
 
+
+    //createDict(std::string("Cluster Data/clusterData"), nCentroids, iter);
 }
+    */
 
 
 
